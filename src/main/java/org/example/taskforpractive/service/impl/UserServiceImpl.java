@@ -51,8 +51,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO loginUser(UserDTO userDTO) throws NoSuchUserException {
-        UserModel user = userRepository.findUserModelByUsernameAndPassword(userDTO.getUsername(), userDTO.getHashed_password());
+    public UserDTO loginUser(UserDTO userDTO) throws NoSuchUserException {//filter for login
+        UserModel user = userRepository.findUserModelByUsernameAndPassword(userDTO.getUsername().trim(), userDTO.getHashed_password().trim());
         if(user != null){
             return convertUserToDto(user);
         }else{
