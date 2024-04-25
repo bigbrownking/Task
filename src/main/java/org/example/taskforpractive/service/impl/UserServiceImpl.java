@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
         user.setRole(false);
         user.setCreated_at(LocalDateTime.now());
         user.setLinkAvatar("default_picture_img");
-        user.setHashed_password(passwordEncoder.encode(userDTO.getHashed_password()));
+        user.setPassword(passwordEncoder.encode(userDTO.getHashed_password()));
         user.setRequests(new ArrayList<>());
 
         userRepository.save(user);
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
         userDto.setUsername(userDto.getUsername());
         userDto.setRole(user.getRole());
         userDto.setCreated_at(user.getCreated_at());
-        userDto.setHashed_password(user.getHashed_password());
+        userDto.setHashed_password(user.getPassword());
 
         return userDto;
     }
