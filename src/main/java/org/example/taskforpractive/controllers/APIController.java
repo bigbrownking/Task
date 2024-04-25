@@ -68,4 +68,10 @@ public class APIController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
+    @GetMapping("/users")
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> userList = userService.getAllUsers();
+        return ResponseEntity.ok(userList);
+    }
+
 }

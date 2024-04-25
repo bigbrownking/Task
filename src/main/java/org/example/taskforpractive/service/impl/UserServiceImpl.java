@@ -25,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private RequestRepository requestRepository;
     private NewsService newsService;
+    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, RequestRepository requestRepository, NewsService newsService) {
@@ -35,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO registerUser(UserDTO userDTO) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
         UserModel user = new UserModel();
 
         user.setId(userDTO.getId());
@@ -52,13 +53,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO loginUser(UserDTO userDTO) throws NoSuchUserException {
-        UserModel user = userRepository.findUserModelByUsernameAndPassword(userDTO.getUsername().trim(), userDTO.getHashed_password().trim());
-        if(user != null){
-            return convertUserToDto(user);
-        }else{
-            throw new NoSuchUserException("This user does not exist");
+        List<UserModel> users = userRepository.findAll();
+        for(UserModel user : users){
+            if(passwordEncoder.matches(user.getPassword(), userDTO.getHashed_password())){
+                return convertUserToDto(user);
+            }
         }
-
+        throw new NoSuchUserException("This user does not exist");
     }
 
     @Override
