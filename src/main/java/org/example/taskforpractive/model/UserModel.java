@@ -19,7 +19,7 @@ public class UserModel {
     private String username;
 
     @Column(name = "password")
-    private String hashed_password;
+    private String password;
 
     @Column(name = "role")
     private Boolean role;
