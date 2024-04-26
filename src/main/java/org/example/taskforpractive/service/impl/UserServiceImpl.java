@@ -5,6 +5,7 @@ import org.example.taskforpractive.dto.RequestDTO;
 import org.example.taskforpractive.dto.UserDTO;
 import org.example.taskforpractive.exceptions.NoSuchUserException;
 import org.example.taskforpractive.exceptions.NotAdminException;
+import org.example.taskforpractive.model.RequestModel;
 import org.example.taskforpractive.model.UserModel;
 import org.example.taskforpractive.repository.RequestRepository;
 import org.example.taskforpractive.repository.UserRepository;
@@ -97,12 +98,13 @@ public class UserServiceImpl implements UserService {
     public RequestDTO makeRequest(Long id, String text) throws NoSuchUserException{
         UserModel userModel = userRepository.findById(id).orElse(null);
         if(userModel != null){
-            RequestDTO requestDTO = new RequestDTO();
-            requestDTO.setCreated_at(LocalDateTime.now());
-            requestDTO.setText(text);
-            requestDTO.setCreatedBy(userModel.getUsername());
+            RequestModel request = new RequestModel();
+            request.setUser(userModel);
+            request.setText(text);
+            request.setCreated_at(LocalDateTime.now());
+            request.setSentBy(userModel.getUsername());
 
-            return requestDTO;
+            return convertRequestToDto(request);
         }else{
             throw new NoSuchUserException("This user doesn't exists");
         }
@@ -116,6 +118,16 @@ public class UserServiceImpl implements UserService {
         }else{
             throw new NotAdminException("You are not admin!");
         }
+    }
+
+    @Override
+    public RequestDTO convertRequestToDto(RequestModel request) {
+        RequestDTO requestDTO = new RequestDTO();
+        requestDTO.setUserId(requestDTO.getUserId());
+        requestDTO.setText(request.getText());
+        requestDTO.setCreated_at(request.getCreated_at());
+        requestDTO.setCreatedBy(request.getSentBy());
+        return requestDTO;
     }
 
     public UserDTO deleteUser(Long id) throws NoSuchUserException {
